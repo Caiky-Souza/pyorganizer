@@ -14,8 +14,8 @@ Pyorganizer comes as an alternative, with an interactive auto folder organizatio
 ## ✨ Key Features
 
 * **Interactive CLI:** A user-friendly terminal interface to manage settings on the fly.
-* **Recursive Organization:** Choose between organizing only the root folder or diving deep into subdirectories.
-* **Smart Categorization:** Automatically detects file extensions and groups them (e.g., .jpg -> JPEGs).
+* **Recursive Organization:** Choose between organizing only the final folder or diving deep into subdirectories.
+* **Smart Categorization:** Automatically detects file extensions and groups them (e.g., .jpg -> JPGs).
 * **Safety First:** Built with `pathlib` for cross-platform compatibility (Windows/Linux) and error handling to prevent data loss.
 
 ## 🛠️ Tech Stack
