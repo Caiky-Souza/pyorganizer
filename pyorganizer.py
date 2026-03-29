@@ -1,53 +1,6 @@
 import sys
-import os
-import pathlib
+from utils import *
 
-# Cria as configurações
-class Config:
-    def __init__(self):
-        self.working_folder = "Documents"
-        self.final_folder = "Documents"
-        self.recursive_organization = False 
-
-# Cabeçalho universal dos menus
-def header():
-    print("============================")
-    print("\tPYORGANIZER")
-    print("============================")
-
-def procurar(pasta):
-    # Procurar a pasta
-    path = pathlib.Path().home()
-    
-    folders_list = [x for x in path.rglob(pasta)]
-
-    if len(folders_list) == 0:
-        clear()
-        print("Não foi encontrado esse diretório.")
-        return
-    elif (len(folders_list) > 1) and (folders_list[0].isdir() == False):
-        clear()
-        print("Há mais de um diretório com esse nome.")
-        return
-    
-    return folders_list[0]
-    
-    
-
-# Função para imprimir o menu inicial
-def menu():
-    header()
-    print("\n1. Iniciar\n2. Modificar Configurações\nX. Sair\n\n: ",end="")
-
-# Função para imprimir o menu de modificação
-def menu_modificacao(config):
-    header()
-    print(f"\n1. Modificar Pasta a Ser Organizada: {config.working_folder}\n2. Modificar Pasta Final: {config.final_folder}\n3. Organização recursiva: {config.recursive_organization}\nX. Voltar\n\n: ",end="")
-
-# Função para limpar tela
-def clear():
-    # Limpa a tela independente dp sistema
-    os.system("cls" if os.name == "nt" else "clear")
 
 # Cria o objeto organizador
 class Organizer:
@@ -65,6 +18,7 @@ class Organizer:
         # Mantém o menu para ver o que o usuário deseja fazer
         menu()
         while True:
+            
             # Pega a resposta
             answer = str(input()).lower()
 
@@ -73,8 +27,10 @@ class Organizer:
                 # Limpa a tela e sai
                 clear()
                 sys.exit("Programa Finalizado!")
+
             elif answer == "1":
-                ...
+                clear()
+                self.iniciar()
             elif answer == "2":
                 # Inicia o menu de modificação
                 clear()
@@ -107,7 +63,9 @@ class Organizer:
                 # Caso encontre, altera as configurações
                 if  found:
                     self.config.working_folder = found.name
+                    clear()
                     print("Alterado!")
+                    menu()
                     return
                 
             elif answer == "2":
@@ -119,33 +77,94 @@ class Organizer:
                 # Caso encontre, altera as configurações
                 if  found:
                     self.config.final_folder = found.name
+                    clear()
                     print("Alterado!")
-                    self.inicializar()
-                    
+                    menu()
+                    return
+
             elif answer == "3":
+                # Envia o menu
+                
+                # Pega a recursividade e Checa se Já está ativado
                 is_activated = self.config.recursive_organization
-                while True:
-                    if is_activated:
-                        print("Deseja desativar o modo recursivo? [Y/N]: ",end="")
-                        answer = str(input()).lower().strip()
-                        if answer == "y":
-                            self.config.recursive_organization = False
-                            print("Desativado!")
-                            break
-                        elif answer == "n":
-                            
-                            break
-                        else: 
-                            print("Opção inválida!")
-                    else:   
-                        print("Deseja ativar o modo recursivo? [Y/N] ",end="")
-                       
-                        if answer == "y":
-                            self.config.recursive_organization = True
-                            print("Ativado!")
-                            break
-                        elif answer == "n":
-                            break
-                        else: 
-                            print("Opção inválida!")
+                # Se estiver
+                if is_activated:
+
+                    # Pergunta para o usuário
+                    print("Deseja desativar o modo recursivo? [Y/N]: ",end="")
+                    answer = str(input()).lower().strip()
+
+                    # Confere a resposta
+                    if answer == "y":
+                        # Altera as configurações
+                        self.config.recursive_organization = False
+                        clear()
+                        print("Desativado!")
+                        
+                    elif answer == "n":
+                        pass
+                    else: 
+                        print("Opção inválida!")
+                else:   
+                    # Pergunta para o usuário
+                    print("Deseja ativar o modo recursivo? [Y/N] ",end="")
+                    answer = str(input()).lower().strip()
+
+                    # Confere a resposta
+                    if answer == "y":
+                        # Altera as configurações
+                        clear()
+                        self.config.recursive_organization = True
+                        print("Ativado!")
+
+                        
+                    elif answer == "n":
+                        pass
+                    else: 
+                        print("Opção inválida!")
+    def iniciar(self):
+        # Receber a pasta inicial
+        w_folder = procurar(self.config.working_folder)
+        
+        # receber a pasta final
+        f_folder = self.config.final_folder
+        
+        # Checar se a pasta final é a padrão
+        if f_folder == "Default":
+            f_folder = w_folder
+        else:
+            f_folder = procurar(f_folder)
+
+        # Saber se quer recursivo
+        recursive = self.config.recursive_organization
+
+        # Ver se essas pastas existem
+        if w_folder and f_folder:
+            # Trabalha cada arquivo
+            if recursive:
+                for archive in w_folder.rglob("*"):
+                    if archive.is_dir():
+                        continue
+                    # Checa a extensão do arquivo
+                    extension = f"{archive.suffix.upper()}s".replace(".","")
+                    # Checa se a extensão já tem pasta
+                    folder = procurar_pasta_ext(f_folder, extension)
+
+                    archive.rename(folder / archive.name)
+            else:
+                for archive in w_folder.glob("*"):
+                    if archive.is_dir():
+                        continue
+                    # Checa a extensão do arquivo
+
+                    extension = f"{archive.suffix.upper()}s".replace(".","")
+
+                    # Checa se a extensão já tem pasta
+                    folder = procurar_pasta_ext(f_folder, extension)
+
+                    archive.rename(folder / archive.name)
+    
+            print("Concluído!")
+            sys.exit()
+                        
 Organizer()
