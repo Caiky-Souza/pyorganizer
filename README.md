@@ -32,9 +32,9 @@ Pyorganizer comes as an alternative, with an interactive auto folder organizatio
    ```
 2. **Run the script:**
    ```pỳthon
-   python pyorganizer.py
+   python pyorganizer.py -d seu_diretorio
    ```
-3. **Configure in CLI:**
+3. **(ALTERNATIVE) Running interactively in CLI:**
    ```CLI
    Follow the interactive menu to set your Working Folder and Destination Folder. The default folder is Documents. You can also toggle the Recursive mode on or off (Be careful when using recursive mode on large, nested directories!).
    ```
